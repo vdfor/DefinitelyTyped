@@ -1,4 +1,4 @@
-// Type definitions for Mapbox GL JS v0.43.0
+// Type definitions for Mapbox GL JS v0.44.1
 // Project: https://github.com/mapbox/mapbox-gl-js
 // Definitions by: Dominik Bruderer <https://github.com/dobrud>, Patrick Reames <https://github.com/patrickr>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -27,15 +27,11 @@ declare namespace mapboxgl {
 
         addControl(control: Control, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
 
+        addControl(control: IControl, position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'): this;
+
         removeControl(control: Control): this;
 
-        addClass(klass: string, options?: mapboxgl.StyleOptions): this;
-
-        removeClass(klass: string, options?: mapboxgl.StyleOptions): this;
-
-        setClasses(klasses: string[], options?: mapboxgl.StyleOptions): this;
-
-        hasClass(klass: string): boolean;
+        removeControl(control: IControl): this;
 
         getClasses(): string[];
 
@@ -161,7 +157,7 @@ declare namespace mapboxgl {
 
         setPitch(pitch: number, eventData?: EventData): this;
 
-        fitBounds(bounds: LngLatBoundsLike, options?: { linear?: boolean, easing?: Function, padding?: number | mapboxgl.PaddingOptions, offset?: PointLike, maxZoom?: number }, eventData?: mapboxgl.EventData): this;
+        fitBounds(bounds: LngLatBoundsLike, options?: mapboxgl.FitBoundsOptions, eventData?: mapboxgl.EventData): this;
 
         jumpTo(options: mapboxgl.CameraOptions, eventData?: mapboxgl.EventData): this;
 
@@ -395,7 +391,7 @@ declare namespace mapboxgl {
      * Navigation
      */
     export class NavigationControl extends Control {
-        constructor();
+		constructor(options?: {showCompass?: boolean, showZoom?: boolean});
     }
 
     export class PositionOptions {
@@ -404,15 +400,12 @@ declare namespace mapboxgl {
         maximumAge?: number;
     }
 
-    export class FitBoundsOptions {
-        maxZoom?: number;
-    }
-
     /**
      * Geolocate
      */
     export class GeolocateControl extends Control {
         constructor(options?: { positionOptions?: PositionOptions, fitBoundsOptions?: FitBoundsOptions, trackUserLocation?: boolean, showUserLocation?: boolean });
+        trigger(): boolean;
     }
 
     /**
@@ -610,7 +603,7 @@ declare namespace mapboxgl {
 
     interface RasterSource extends Source {
         type: 'raster';
-        url: string;
+        url?: string;
         tiles?: string[];
         minzoom?: number;
         maxzoom?: number;
@@ -688,6 +681,9 @@ declare namespace mapboxgl {
 
         /** Return a LngLatBounds as a string */
         toString(): string;
+
+        /** Returns a boolean */
+        isEmpty(): boolean
 
         /** Convert an array to a LngLatBounds object, or return an existing LngLatBounds object unchanged. */
         static convert(input: LngLatBoundsLike): mapboxgl.LngLatBounds;
@@ -870,6 +866,16 @@ declare namespace mapboxgl {
         speed?: number;
         screenSpeed?: number;
         easing?: Function;
+        maxDuration?: number;
+    }
+
+    export interface FitBoundsOptions extends mapboxgl.FlyToOptions {
+        linear?: boolean;
+        easing?: Function;
+        padding?: number | mapboxgl.PaddingOptions;
+        offset?: mapboxgl.PointLike;
+        maxZoom?: number;
+        maxDuration?: number;
     }
 
     /**
@@ -1022,7 +1028,7 @@ declare namespace mapboxgl {
         'icon-size'?: number | StyleFunction | Expression;
         'icon-text-fit'?: 'none' | 'both' | 'width' | 'height';
         'icon-text-fit-padding'?: number[] | Expression;
-        'icon-image'?: string | StyleFunction;
+        'icon-image'?: string | StyleFunction | Expression;
         'icon-rotate'?: number | StyleFunction | Expression;
         'icon-padding'?: number | Expression;
         'icon-keep-upright'?: boolean;
@@ -1090,6 +1096,7 @@ declare namespace mapboxgl {
         'circle-color'?: string | StyleFunction | Expression;
         'circle-blur'?: number | StyleFunction | Expression;
         'circle-opacity'?: number | StyleFunction | Expression;
+        'circle-opacity-transition'?: Transition;
         'circle-translate'?: number[] | Expression;
         'circle-translate-anchor'?: 'map' | 'viewport';
         'circle-pitch-scale'?: 'map' | 'viewport';

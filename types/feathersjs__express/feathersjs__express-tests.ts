@@ -1,5 +1,11 @@
 import feathers, { Application } from '@feathersjs/feathers';
-import feathersExpress from '@feathersjs/express';
-import { Application as ExpressApplication } from 'express';
+import feathersExpress, * as express from '@feathersjs/express';
 
-const app: ExpressApplication & Application<{}> = feathersExpress(feathers());
+const app = feathersExpress(feathers());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use('/', express.static('./public'));
+app.configure(express.rest());
+app.use(express.notFound());
+app.use(express.errorHandler({ logger: console }));

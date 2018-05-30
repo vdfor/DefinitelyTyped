@@ -3,7 +3,7 @@
 // Definitions by: Drew Hays <https://github.com/dru89>
 //                 Brice BERNARD <https://github.com/brikou>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
+// TypeScript Version: 2.6
 
 /// <reference types="node" />
 
@@ -36,6 +36,7 @@ declare namespace next {
     }
 
     interface Server {
+        setAssetPrefix: (cdnUrl: string) => void;
         handleRequest(
             req: http.IncomingMessage,
             res: http.ServerResponse,

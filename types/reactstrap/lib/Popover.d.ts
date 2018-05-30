@@ -1,7 +1,6 @@
-/// <reference types='react' />
-
+import * as React from 'react';
 import { CSSModule } from '../index';
-import {Popper} from './Popper';
+import { Popper } from './Popper';
 
 export interface PopoverProps extends React.HTMLAttributes<HTMLElement> {
   isOpen?: boolean;
@@ -12,11 +11,12 @@ export interface PopoverProps extends React.HTMLAttributes<HTMLElement> {
   placement?: Popper.Placement;
   innerClassName?: string;
   disabled?: boolean;
+  hideArrow?: boolean;
   placementPrefix?: string;
   delay?: number | {show: number, hide: number};
   modifiers?: Popper.Modifiers;
   cssModule?: CSSModule;
 }
 
-declare const Popover: React.StatelessComponent<PopoverProps>;
+declare class Popover extends React.Component<PopoverProps> {}
 export default Popover;

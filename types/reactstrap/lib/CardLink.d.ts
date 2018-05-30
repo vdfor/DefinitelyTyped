@@ -1,8 +1,8 @@
 import { CSSModule } from '../index';
 
-export interface CardLinkProps {
+export interface CardLinkProps extends React.HTMLAttributes<HTMLElement> {
   tag?: React.ReactType;
-  innerRef?: string | ((instance: HTMLButtonElement) => any);
+  innerRef?: React.Ref<HTMLAnchorElement>;
   className?: string;
   cssModule?: CSSModule;
   href?: string;

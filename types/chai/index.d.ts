@@ -9,6 +9,7 @@
 //                 Shaun Luttin <https://github.com/shaunluttin>
 //                 Gintautas Miselis <https://github.com/Naktibalda>
 //                 Satana Charuwichitratana <https://github.com/micksatana>
+//                 Erik Schierboom <https://github.com/ErikSchierboom>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 declare namespace Chai {
@@ -150,10 +151,11 @@ declare namespace Chai {
         most: NumberComparer;
         lte: NumberComparer;
         within(start: number, finish: number, message?: string): Assertion;
+        within(start: Date, finish: Date, message?: string): Assertion;
     }
 
     interface NumberComparer {
-        (value: number, message?: string): Assertion;
+        (value: number | Date, message?: string): Assertion;
     }
 
     interface TypeComparison {
@@ -226,7 +228,7 @@ declare namespace Chai {
     }
 
     interface Match {
-        (regexp: RegExp|string, message?: string): Assertion;
+        (regexp: RegExp, message?: string): Assertion;
     }
 
     interface Keys {

@@ -102,8 +102,8 @@ puppeteer.launch().then(async browser => {
   await page.setRequestInterception(true);
   page.on("request", interceptedRequest => {
     if (
-      interceptedRequest.url.endsWith(".png") ||
-      interceptedRequest.url.endsWith(".jpg")
+      interceptedRequest.url().endsWith(".png") ||
+      interceptedRequest.url().endsWith(".jpg")
     )
       interceptedRequest.abort();
     else interceptedRequest.continue();
@@ -117,9 +117,15 @@ puppeteer.launch().then(async browser => {
   await watchDog;
 
   let currentURL: string;
+
   page
     .waitForSelector("img", { visible: true })
-    .then(() => console.log("First URL with image: " + currentURL));
+    .then(() => console.log("First URL with image by selector: " + currentURL));
+
+  page
+    .waitForXPath("//img", { visible: true })
+    .then(() => console.log("First URL with image by xpath: " + currentURL));
+
   for (currentURL of [
     "https://example.com",
     "https://google.com",
@@ -281,3 +287,54 @@ puppeteer.launch().then(async browser => {
 
   browser.close();
 })();
+
+// Test 0.13 features
+(async () => {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  const handler = (r: puppeteer.Request) => {
+    const failure = r.failure();
+
+    if (failure == null) {
+      console.error("Request completed successfully");
+      return;
+    }
+
+    console.log("Request failed", failure.errorText.toUpperCase());
+  };
+  page.on('requestfinished', handler);
+  page.on('requestfailed', handler);
+})();
+
+// Test 1.0 features
+(async () => {
+  const browser = await puppeteer.launch({
+    ignoreDefaultArgs: true,
+  });
+  const page = await browser.newPage();
+  const args: string[] = puppeteer.defaultArgs();
+
+  await page.pdf({
+    headerTemplate: 'header',
+    footerTemplate: 'footer',
+  });
+
+  await page.coverage.startCSSCoverage();
+  await page.coverage.startJSCoverage();
+  let cov = await page.coverage.stopCSSCoverage();
+  cov = await page.coverage.stopJSCoverage();
+  const text: string = cov[0].text;
+  const url: string = cov[0].url;
+  const firstRange: number = cov[0].ranges[0].end - cov[0].ranges[0].start;
+
+  let [handle]: puppeteer.ElementHandle[] = await page.$x('expression');
+  ([handle] = await page.mainFrame().$x('expression'));
+  ([handle] = await handle.$x('expression'));
+
+  const target = page.target();
+  const session = await target.createCDPSession();
+  await session.send('methodname', { option: 42 });
+  await session.detach();
+
+  await page.tracing.start({ path: "trace.json", categories: ["one", "two"] });
+});

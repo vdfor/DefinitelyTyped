@@ -8,7 +8,7 @@
 //                 MartynasZilinskas <https://github.com/MartynasZilinskas>
 //                 Torgeir Hovden <https://github.com/thovden>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
+// TypeScript Version: 2.6
 
 /// <reference types="cheerio" />
 import { ReactElement, Component, AllHTMLAttributes as ReactHTMLAttributes, SVGAttributes as ReactSVGAttributes } from "react";
@@ -23,7 +23,7 @@ export class ElementClass extends Component<any, any> {
  * all specified in the implementation. TS chooses the EnzymePropSelector overload and loses the generics
  */
 export interface ComponentClass<Props> {
-    new(props?: Props, context?: any): Component<Props, any>;
+    new(props: Props, context?: any): Component<Props>;
 }
 
 export type StatelessComponent<Props> = (props: Props, context?: any) => JSX.Element;
@@ -354,7 +354,7 @@ export interface CommonWrapper<P = {}, S = {}> {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface ShallowWrapper<P = {}, S = {}> extends CommonWrapper<P, S> {}
+export interface ShallowWrapper<P = {}, S = {}> extends CommonWrapper<P, S> { }
 export class ShallowWrapper<P = {}, S = {}> {
     constructor(nodes: JSX.Element[] | JSX.Element, root?: ShallowWrapper<any, any>, options?: ShallowRendererProps);
     shallow(options?: ShallowRendererProps): ShallowWrapper<P, S>;
@@ -375,8 +375,7 @@ export class ShallowWrapper<P = {}, S = {}> {
      */
     filter<P2>(component: ComponentClass<P2>): ShallowWrapper<P2, any>;
     filter<P2>(statelessComponent: StatelessComponent<P2>): ShallowWrapper<P2, never>;
-    filter(props: EnzymePropSelector): this;
-    filter(selector: string): ShallowWrapper<HTMLAttributes, any>;
+    filter(props: EnzymePropSelector | string): ShallowWrapper<P, S>;
 
     /**
      * Finds every node in the render tree that returns true for the provided predicate function.
@@ -441,7 +440,7 @@ export class ShallowWrapper<P = {}, S = {}> {
 }
 
 // tslint:disable-next-line no-empty-interface
-export interface ReactWrapper<P = {}, S = {}> extends CommonWrapper<P, S> {}
+export interface ReactWrapper<P = {}, S = {}> extends CommonWrapper<P, S> { }
 export class ReactWrapper<P = {}, S = {}> {
     constructor(nodes: JSX.Element | JSX.Element[], root?: ReactWrapper<any, any>, options?: MountRendererProps);
 
@@ -496,8 +495,7 @@ export class ReactWrapper<P = {}, S = {}> {
      */
     filter<P2>(component: ComponentClass<P2>): ReactWrapper<P2, any>;
     filter<P2>(statelessComponent: StatelessComponent<P2>): ReactWrapper<P2, never>;
-    filter(props: EnzymePropSelector): this;
-    filter(selector: string): ReactWrapper<HTMLAttributes, any>;
+    filter(props: EnzymePropSelector | string): ReactWrapper<P, S>;
 
     /**
      * Returns a new wrapper with all of the children of the node(s) in the current wrapper. Optionally, a selector
@@ -579,7 +577,7 @@ export interface MountRendererProps {
     /**
      * DOM Element to attach the component to
      */
-    attachTo?: HTMLElement;
+    attachTo?: HTMLElement | null;
     /**
      * Merged contextTypes for all children of the wrapper
      */
